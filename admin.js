@@ -46,7 +46,10 @@ async function init(){
   statusPill.textContent = 'Bağlandı';
   await loadCategoriesToSelect();
   await repaintCategories();
-    await repaintProducts();// Tab default
+    await repaintProducts();
+  await repaintProducts();
+
+  // Tab default
   AdminUI.showTab('products');
 
   // file -> base64 preview handler

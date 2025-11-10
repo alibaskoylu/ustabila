@@ -101,22 +101,13 @@ function parseGviz(text){ const start = text.indexOf("{"); const end = text.last
 function sheetToRows(json){ try{ const table = json.table; const cols = table.cols.map(c=>c.label); const rows = table.rows.map(r=>{ const obj = {}; r.c.forEach((cell,i)=>{ const key = cols[i] || `col${i}`; obj[key] = cell ? cell.v : null; }); return obj; }); return rows; }catch(e){ console.error("Parse error", e); return []; } }
 async function fetchSheet(){ try{ const res = await fetch(SHEET_URL, {cache: "no-store"}); const txt = await res.text(); const json = parseGviz(txt); const rows = sheetToRows(json); initialData = rows; const now = new Date(); lastUpdateEl.textContent = "Son Güncelleme: " + now.toLocaleString("tr-TR"); const q = searchInput.value.trim().toLowerCase(); const all = getAllData(); if(!q) renderTable(all); else { const filtered = all.filter(row => Object.values(row).some(v => String(v||"").toLowerCase().includes(q))); renderTable(filtered); } }catch(e){ console.error("Sheet fetch error", e); lastUpdateEl.textContent = "Son Güncelleme: (hata)"; } }
 fetchSheet();
-setInterval(fetchSheet, 30000);
+setInterval(fetchSheet, 5000);
 let timer;
 searchInput.addEventListener("input", ()=>{ clearTimeout(timer); timer = setTimeout(()=>{ const q = searchInput.value.trim().toLowerCase(); const all = getAllData(); if(!q){ renderTable(all); return; } const filtered = all.filter(row => Object.values(row).some(v => String(v||"").toLowerCase().includes(q))); renderTable(filtered); }, 200); });
 addForm.addEventListener("submit", (e)=>{ e.preventDefault(); const stok = stokInput.value.trim(); const pesin = pesinInput.value === "" ? null : Number(pesinInput.value); const vadeli = vadeliInput.value === "" ? null : Number(vadeliInput.value); if(!stok){ stokInput.focus(); return; } const extras = loadExtras(); const newRow = {"Stok Adı": stok, "Peşin Fiyat": pesin, "Vadeli Fiyat": vadeli}; extras.push(newRow); saveExtras(extras); stokInput.value = ""; pesinInput.value = ""; vadeliInput.value = ""; renderTable(getAllData()); stokInput.focus(); });
 function toCSV(rows){ const headers = ["Stok Adı","Peşin Fiyat","Vadeli Fiyat"]; const lines = [headers.join(",")]; rows.forEach(r=>{ const line = headers.map(h=>{ let v = r[h]; if(v===null||v===undefined) return '""'; v = String(v).replace(/"/g,'""'); return `"`+v+`"`; }).join(","); lines.push(line); }); return lines.join("\\n"); }
 exportCsvBtn.addEventListener("click", ()=>{ const rows = getAllData(); const csv = toCSV(rows); const blob = new Blob([csv], {type: "text/csv;charset=utf-8;"}); const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = "bilafiyat_export.csv"; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); });
 resetBtn.addEventListener("click", ()=>{ if(!confirm("Tarayıcıda eklenen kayıtlar silinecek. Emin misiniz?")) return; localStorage.removeItem(LS_KEY); renderTable(initialData); });
-
-<script>
-function normalizeTR(s){
-  return (s||'').toString()
-    .replace(/I/g,'ı').replace(/İ/g,'i')
-    .toLowerCase()
-    .normalize('NFD').replace(/[̀-ͯ]/g,'');
-}
 </script>
-
 </body>
 </html>

@@ -168,6 +168,14 @@ async function fetchData() {
   if (ep) { console.error(ep); return; }
   allData = { cats: cats || [], prods: prods || [] };
   renderAll();
+  // show warning if no categories fetched
+  if(allData.cats.length === 0){
+    const cont = document.querySelector('#dynamic-content') || document.body;
+    const msg = document.createElement('div');
+    msg.style.color='red'; msg.style.padding='12px'; msg.textContent = 'UYARI: Kategoriler gelmedi veya boş. Supabase bağlantısını kontrol et.';
+    cont.prepend(msg);
+  }
+
 }
 
 function matchesSearch(p) {
@@ -246,15 +254,13 @@ function showProduct(p) {
 /* -----------------------
    SEARCH: force single input
 ------------------------*/
-function ensureSingleSearch(){
-  // Only manage our own search box inside #search-wrapper, don't touch others
-  const wrap = document.getElementById('search-wrapper');
-  if(!wrap) return;
-  const boxes = wrap.querySelectorAll('input[data-role="main-search"]');
-  if(boxes.length <= 1) return;
-  // keep the last one
-  for(let i=0;i<boxes.length-1;i++){ boxes[i].remove(); }
-}
+function ensureSingleSearch() {
+  // Try to find an existing search input
+  let input = document.getElementById('search');
+  if (!input) {
+    // Fallback: any input whose placeholder includes 'ara'
+    input = Array.from(document.querySelectorAll('input')).find(i => (i.placeholder || '').toLowerCase().includes('ara'));
+  }
 
   // If still not found, create one above dynamic-content
   if (!input) {
@@ -286,6 +292,14 @@ function ensureSingleSearch(){
   input.addEventListener('input', (e) => {
     searchText = (e.target.value || '').trim();
     renderAll();
+  // show warning if no categories fetched
+  if(allData.cats.length === 0){
+    const cont = document.querySelector('#dynamic-content') || document.body;
+    const msg = document.createElement('div');
+    msg.style.color='red'; msg.style.padding='12px'; msg.textContent = 'UYARI: Kategoriler gelmedi veya boş. Supabase bağlantısını kontrol et.';
+    cont.prepend(msg);
+  }
+
   });
 }
 
