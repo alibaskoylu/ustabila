@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kullanıcı Girişi</title>
+<style>
+  body{
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    background:linear-gradient(135deg,#e8f5e9,#c8e6c9);
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+  }
+  h1{
+    color:#1b5e20;
+    margin-bottom:40px;
+    text-shadow:1px 1px 4px rgba(0,0,0,0.2);
+  }
+  .box-container{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:30px;
+  }
+  .login-card{
+    background:white;
+    border-radius:16px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.15);
+    width:280px;
+    padding:30px 25px;
+    transition:transform .3s,box-shadow .3s;
+  }
+  .login-card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 10px 28px rgba(0,0,0,0.25);
+  }
+  .login-card h2{color:#2e7d32;margin-bottom:20px;}
+  .login-card input{
+    width:100%;padding:10px;margin:8px 0;
+    border:1px solid #ccc;border-radius:8px;
+    font-size:15px;
+  }
+  .login-card button{
+    width:100%;padding:12px;margin-top:10px;
+    background:#2e7d32;color:#fff;border:none;
+    border-radius:8px;font-weight:600;
+    cursor:pointer;transition:background .3s;
+  }
+  .login-card button:hover{background:#256428;}
+  .msg{color:#c62828;margin-top:10px;}
+  .back-btn{
+    margin-top:30px;
+    color:#2e7d32;
+    text-decoration:none;
+    font-weight:600;
+    border:1px solid #2e7d32;
+    padding:8px 16px;
+    border-radius:8px;
+    transition:all .3s;
+  }
+  .back-btn:hover{
+    background:#2e7d32;
+    color:white;
+  }
+</style>
+</head>
+<body>
+  <h1>Bila Tarım Giriş Ekranı</h1>
+  <div class="box-container">
+    <div class="login-card" id="adminCard">
+      <h2>👨‍💼 Yönetici Girişi</h2>
+      <input type="text" id="adminUser" placeholder="Kullanıcı Adı">
+      <input type="password" id="adminPass" placeholder="Şifre">
+      <button onclick="adminLogin()">Giriş Yap</button>
+      <div class="msg" id="adminMsg"></div>
+    </div>
+
+    <div class="login-card" id="customerCard">
+      <h2>🧑‍🌾 Müşteri Girişi</h2>
+      <input type="text" id="custUser" placeholder="Kullanıcı Adı">
+      <input type="password" id="custPass" placeholder="Şifre">
+      <button onclick="customerLogin()">Giriş Yap</button>
+      <div class="msg" id="custMsg"></div>
+    </div>
+  </div>
+
+  <a href="index.html" class="back-btn">← Ana Sayfaya Dön</a>
+
+<script>
+function adminLogin(){
+  const u=document.getElementById('adminUser').value.trim();
+  const p=document.getElementById('adminPass').value.trim();
+  if(u==='admin' && p==='bila2025'){
+    sessionStorage.setItem('auth','1');
+    window.location.href='admin.html';
+  } else {
+    document.getElementById('adminMsg').textContent='Hatalı kullanıcı adı veya şifre';
+  }
+}
+
+function customerLogin(){
+  const u=document.getElementById('custUser').value.trim();
+  const p=document.getElementById('custPass').value.trim();
+  if(u && p){
+    alert('Hoş geldiniz '+u+'! Müşteri girişi başarıyla yapıldı.');
+    window.location.href='index.html';
+  } else {
+    document.getElementById('custMsg').textContent='Lütfen kullanıcı adı ve şifre girin.';
+  }
+}
+</script>
+</body>
+</html>
